@@ -43,6 +43,24 @@ def estimate_distance_from_rtt(rtt, rtt_at_1m=1.0, n=2.0):
         print(f"Error estimating distance: {e}")
         return None
 
+# Function to estimate distance based on Batman TQ
+def estimate_distance_from_tq(tq, tq_at_1m=255.0, n=2.0):
+    """
+    :param tq: Transmission Quality (TQ) value from Batman-adv (typically 0–255)
+    :param tq_at_1m: Expected TQ at 1 meter distance (default is 255 for ideal link)
+    :param n: Path loss exponent controlling how quickly signal quality drops (default is 2.0)
+    :return: Estimated distance in meters (float)
+    """
+    try:
+        if tq is None or tq <= 0:
+            return None
+        # Use inverse power model — as TQ decreases, distance increases
+        distance = (tq_at_1m / tq) ** n
+        return distance
+    except Exception as e:
+        print(f"Error estimating distance: {e}")
+        return None
+
 # Main code
 def main():
     ips = {
